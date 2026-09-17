@@ -15,6 +15,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
+import { NumericInput } from "@/components/ui/numeric-input";
+import { Label } from "@/components/ui/label";
 import {
   Zap,
   Gauge,
@@ -23,9 +25,10 @@ import {
   Sparkles,
   Minus,
   Plus,
+  Home,
 } from "lucide-react";
 
-export type CalcMode = "units" | "amount";
+export type CalcMode = "units" | "amount" | "appliances";
 
 const UNIT_PRESETS = [
   { label: "50 kWh", value: 50, desc: "Life Line" },
@@ -182,12 +185,12 @@ export function CalculatorForm({
   );
 
   return (
-    <Card className="border border-border bg-card shadow-sm sm:shadow-md p-5 sm:p-6 transition-all">
+    <Card className="border border-border bg-card shadow-sm sm:shadow-md p-4 sm:p-6 transition-[border-color,box-shadow] duration-200">
       <CardHeader className="p-0 pb-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="space-y-1">
             <CardTitle className="text-base font-semibold tracking-tight text-foreground flex items-center gap-2">
-              <span className="p-1 rounded-md bg-primary/10 text-primary">
+              <span className="p-1.5 rounded-lg bg-primary/10 text-primary">
                 {mode === "units" ? (
                   <Zap className="size-4" />
                 ) : (
@@ -206,30 +209,30 @@ export function CalculatorForm({
           </div>
 
           {/* Mode Switcher */}
-          <div className="inline-flex items-center self-start sm:self-auto p-1 rounded-xl bg-muted/70 border border-border/40">
+          <div className="hidden sm:inline-flex items-center self-start sm:self-auto p-1 rounded-xl bg-muted/70 border border-border/40 w-45 -mt-8">
             <button
               type="button"
               onClick={() => handleModeSwitch("units")}
-              className={`w-22 flex items-center gap-1.5 p-2 rounded-lg text-xs font-medium transition-all duration-200 cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-transform duration-150 active:scale-[0.97] cursor-pointer whitespace-nowrap ${
                 mode === "units"
-                  ? "bg-background text-foreground shadow-xs border border-border/50"
+                  ? "bg-background text-foreground shadow-xs border border-border/50 font-semibold"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
               <Zap className="size-3.5 text-primary" />
-              Units (kWh)
+              Units
             </button>
             <button
               type="button"
               onClick={() => handleModeSwitch("amount")}
-              className={`w-22 flex items-center gap-1 p-2 rounded-lg text-xs font-medium transition-all duration-200 cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-transform duration-150 active:scale-[0.97] cursor-pointer whitespace-nowrap ${
                 mode === "amount"
-                  ? "bg-background text-foreground shadow-xs border border-border/50"
+                  ? "bg-background text-foreground shadow-xs border border-border/50 font-semibold"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <Banknote className="size-3.5 text-emerald-500" />
-              Amount (৳)
+              <Banknote className="size-3.5 text-primary" />
+              Budget
             </button>
           </div>
         </div>
@@ -240,35 +243,27 @@ export function CalculatorForm({
         {mode === "units" ? (
           <div className="space-y-3">
             <div className="flex items-center justify-between text-xs">
-              <label
+              <Label
                 htmlFor="units-input"
                 className="font-medium text-foreground flex items-center gap-1.5"
               >
                 Monthly Usage
-              </label>
+              </Label>
               <span className="text-muted-foreground tabular-nums">
                 Unit: kWh
               </span>
             </div>
 
             {/* Hero Input Box */}
-            <div className="relative group rounded-2xl border border-border/60 bg-muted/20 focus-within:border-primary/60 focus-within:bg-card focus-within:ring-2 focus-within:ring-primary/20 transition-all p-3.5 sm:p-4 flex items-baseline justify-between">
-              <input
+            <div className="relative group rounded-2xl border border-border/60 bg-muted/20 focus-within:border-primary/60 focus-within:bg-card focus-within:ring-2 focus-within:ring-primary/20 transition-[border-color,background-color,box-shadow] duration-150 p-3.5 sm:p-4 flex items-baseline justify-between min-h-[58px]">
+              <NumericInput
                 id="units-input"
-                type="number"
-                min={0}
-                value={units === 0 ? "" : units}
-                onChange={(e) => handleUnitsChange(e.target.value)}
-                onWheel={(e) => e.currentTarget.blur()}
-                onKeyDown={(e) => {
-                  if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                    e.preventDefault();
-                  }
-                }}
-                className="w-full text-3xl sm:text-4xl font-semibold tracking-tight tabular-nums bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/30 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                value={units}
+                onValueChange={onUnitsChange}
+                className="w-full text-3xl sm:text-4xl md:text-4xl font-bold tracking-tight tabular-nums bg-transparent border-none outline-none shadow-none focus-visible:ring-0 focus-visible:border-none p-0 h-auto text-foreground placeholder:text-muted-foreground/30 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 placeholder="0"
               />
-              <span className="shrink-0 text-sm font-medium text-muted-foreground pl-2 select-none">
+              <span className="shrink-0 text-sm font-semibold text-muted-foreground pl-2 select-none">
                 kWh
               </span>
             </div>
@@ -280,11 +275,11 @@ export function CalculatorForm({
                 max={1000}
                 step={1}
                 onValueChange={handleUnitsSlider}
-                className="py-1.5 cursor-pointer"
+                className="py-2 cursor-pointer touch-none"
               />
 
               {/* Exact Positioned Ticks & Labels */}
-              <div className="relative w-full h-7 mt-1.5 select-none">
+              <div className="relative w-full h-8 mt-1 select-none">
                 {UNIT_TICKS.map((tick) => {
                   const isPastOrActive = units >= tick.val;
                   const isExact = units === tick.val;
@@ -294,7 +289,7 @@ export function CalculatorForm({
                       type="button"
                       onClick={() => onUnitsChange(tick.val)}
                       style={{ left: `${tick.pct}%` }}
-                      className={`group absolute top-0 flex flex-col cursor-pointer transition-all duration-150 ${
+                      className={`group absolute top-0 flex flex-col cursor-pointer transition-transform duration-150 active:scale-[0.97] min-h-[36px] ${
                         tick.pct === 0
                           ? "items-start"
                           : tick.pct === 100
@@ -305,7 +300,7 @@ export function CalculatorForm({
                     >
                       {/* Vertical Pip Indicator */}
                       <span
-                        className={`w-[2px] h-1.5 rounded-full transition-all duration-200 ${
+                        className={`w-[2px] h-1.5 rounded-full transition-all duration-150 ${
                           isExact
                             ? "bg-primary h-2 shadow-xs"
                             : isPastOrActive
@@ -315,7 +310,7 @@ export function CalculatorForm({
                       />
                       {/* Text Label */}
                       <span
-                        className={`text-[11px] tabular-nums mt-0.5 font-medium transition-colors ${
+                        className={`text-[11px] tabular-nums mt-1 font-medium transition-colors ${
                           isExact
                             ? "text-primary font-bold"
                             : isPastOrActive
@@ -337,7 +332,7 @@ export function CalculatorForm({
                 <Sparkles className="size-3 text-primary" />
                 <span>Quick Presets:</span>
               </div>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 {UNIT_PRESETS.map((p) => {
                   const isSelected = units === p.value;
                   return (
@@ -345,15 +340,15 @@ export function CalculatorForm({
                       key={p.value}
                       type="button"
                       onClick={() => applyUnitsPreset(p.value)}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-all duration-150 cursor-pointer active:scale-95 ${
+                      className={`h-7 px-3 py-1 rounded-xl text-xs font-medium border transition-transform duration-150 cursor-pointer active:scale-[0.97] ${
                         isSelected
-                          ? "bg-primary text-primary-foreground border-primary shadow-xs"
-                          : "bg-muted/40 hover:bg-muted text-muted-foreground hover:text-foreground border-border/50"
+                          ? "bg-primary text-primary-foreground border-primary shadow-xs font-semibold"
+                          : "bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground border-border/60"
                       }`}
                     >
                       {p.label}
                       {p.desc && (
-                        <span className="ml-1 text-[10px] opacity-75">
+                        <span className="ml-1 text-[10px] opacity-80">
                           ({p.desc})
                         </span>
                       )}
@@ -366,38 +361,30 @@ export function CalculatorForm({
         ) : (
           <div className="space-y-3">
             <div className="flex items-center justify-between text-xs">
-              <label
+              <Label
                 htmlFor="amount-input"
                 className="font-medium text-foreground flex items-center gap-1.5"
               >
                 Total Bill Amount
-              </label>
+              </Label>
               <span className="text-muted-foreground tabular-nums">
                 Unit: BDT (৳)
               </span>
             </div>
 
             {/* Hero Input Box */}
-            <div className="relative group rounded-2xl border border-border/60 bg-muted/20 focus-within:border-primary/60 focus-within:bg-card focus-within:ring-2 focus-within:ring-primary/20 transition-all p-3.5 sm:p-4 flex items-baseline justify-between">
+            <div className="relative group rounded-2xl border border-border/60 bg-muted/20 focus-within:border-primary/60 focus-within:bg-card focus-within:ring-2 focus-within:ring-primary/20 transition-[border-color,background-color,box-shadow] duration-150 p-3.5 sm:p-4 flex items-baseline justify-between min-h-14">
               <span className="shrink-0 text-2xl sm:text-3xl font-semibold text-muted-foreground pr-2 select-none">
                 ৳
               </span>
-              <input
+              <NumericInput
                 id="amount-input"
-                type="number"
-                min={0}
-                value={amount === 0 ? "" : amount}
-                onChange={(e) => handleAmountChange(e.target.value)}
-                onWheel={(e) => e.currentTarget.blur()}
-                onKeyDown={(e) => {
-                  if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                    e.preventDefault();
-                  }
-                }}
-                className="w-full text-3xl sm:text-4xl font-semibold tracking-tight tabular-nums bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/30 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                value={amount}
+                onValueChange={onAmountChange}
+                className="w-full text-3xl sm:text-4xl md:text-4xl font-bold tracking-tight tabular-nums bg-transparent border-none outline-none shadow-none focus-visible:ring-0 focus-visible:border-none p-0 h-auto text-foreground placeholder:text-muted-foreground/30 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 placeholder="0"
               />
-              <span className="shrink-0 text-sm font-medium text-muted-foreground pl-2 select-none">
+              <span className="shrink-0 text-sm font-semibold text-muted-foreground pl-2 select-none">
                 BDT
               </span>
             </div>
@@ -409,11 +396,11 @@ export function CalculatorForm({
                 max={10000}
                 step={10}
                 onValueChange={handleAmountSlider}
-                className="py-1.5 cursor-pointer"
+                className="py-2 cursor-pointer touch-none"
               />
 
               {/* Exact Positioned Ticks & Labels */}
-              <div className="relative w-full h-7 mt-1.5 select-none">
+              <div className="relative w-full h-8 mt-1 select-none">
                 {AMOUNT_TICKS.map((tick) => {
                   const isPastOrActive = amount >= tick.val;
                   const isExact = amount === tick.val;
@@ -423,7 +410,7 @@ export function CalculatorForm({
                       type="button"
                       onClick={() => applyAmountPreset(tick.val)}
                       style={{ left: `${tick.pct}%` }}
-                      className={`group absolute top-0 flex flex-col cursor-pointer transition-all duration-150 ${
+                      className={`group absolute top-0 flex flex-col cursor-pointer transition-transform duration-150 active:scale-[0.97] min-h-[36px] ${
                         tick.pct === 0
                           ? "items-start"
                           : tick.pct === 100
@@ -434,7 +421,7 @@ export function CalculatorForm({
                     >
                       {/* Vertical Pip Indicator */}
                       <span
-                        className={`w-[2px] h-1.5 rounded-full transition-all duration-200 ${
+                        className={`w-[2px] h-1.5 rounded-full transition-all duration-150 ${
                           isExact
                             ? "bg-primary h-2 shadow-xs"
                             : isPastOrActive
@@ -444,7 +431,7 @@ export function CalculatorForm({
                       />
                       {/* Text Label */}
                       <span
-                        className={`text-[11px] tabular-nums mt-0.5 font-medium transition-colors ${
+                        className={`text-[11px] tabular-nums mt-1 font-medium transition-colors ${
                           isExact
                             ? "text-primary font-bold"
                             : isPastOrActive
@@ -463,10 +450,10 @@ export function CalculatorForm({
             {/* Presets */}
             <div className="space-y-2 pt-1">
               <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
-                <Sparkles className="size-3 text-emerald-500" />
+                <Sparkles className="size-3 text-primary" />
                 <span>Quick Presets:</span>
               </div>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 {AMOUNT_PRESETS.map((p) => {
                   const isSelected = amount === p.value;
                   return (
@@ -474,10 +461,10 @@ export function CalculatorForm({
                       key={p.value}
                       type="button"
                       onClick={() => applyAmountPreset(p.value)}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-all duration-150 cursor-pointer active:scale-95 ${
+                      className={`h-7 px-3 py-1 rounded-xl text-xs font-medium border transition-transform duration-150 cursor-pointer active:scale-[0.97] ${
                         isSelected
-                          ? "bg-primary text-primary-foreground border-primary shadow-xs"
-                          : "bg-muted/40 hover:bg-muted text-muted-foreground hover:text-foreground border-border/50"
+                          ? "bg-primary text-primary-foreground border-primary shadow-xs font-semibold"
+                          : "bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground border-border/60"
                       }`}
                     >
                       {p.label}
@@ -490,22 +477,22 @@ export function CalculatorForm({
         )}
 
         {/* Demand Load Section */}
-        <div className="pt-3 border-t border-border/50 space-y-3">
+        <div className="pt-4 border-t border-border/50 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
               <Gauge className="size-4 text-primary" />
-              <label
+              <Label
                 htmlFor="demand-input"
                 className="text-xs font-medium text-foreground"
               >
                 Sanctioned Demand Load
-              </label>
+              </Label>
               <Tooltip>
                 <TooltipTrigger
                   render={
                     <button
                       type="button"
-                      className="cursor-help inline-flex text-muted-foreground hover:text-foreground"
+                      className="cursor-help inline-flex text-muted-foreground hover:text-foreground p-1"
                     >
                       <Info className="size-3.5" />
                     </button>
@@ -523,29 +510,21 @@ export function CalculatorForm({
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="relative flex-1 h-12 rounded-xl border border-border/60 bg-muted/20 focus-within:border-primary/60 focus-within:bg-card focus-within:ring-2 focus-within:ring-primary/20 transition-all px-3.5 flex items-center justify-between">
-              <input
+            <div className="relative flex-1 h-12 rounded-xl border border-border/60 bg-muted/20 focus-within:border-primary/60 focus-within:bg-card focus-within:ring-2 focus-within:ring-primary/20 transition-[border-color,background-color,box-shadow] duration-150 px-3.5 flex items-center justify-between">
+              <NumericInput
                 id="demand-input"
-                type="number"
-                min={0}
-                step={0.1}
-                value={demand === 0 ? "" : demand}
-                onChange={(e) => handleDemandChange(e.target.value)}
-                onWheel={(e) => e.currentTarget.blur()}
-                onKeyDown={(e) => {
-                  if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                    e.preventDefault();
-                  }
-                }}
-                className="w-full text-lg font-semibold tabular-nums bg-transparent border-none outline-none text-foreground [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                value={demand}
+                onValueChange={onDemandChange}
+                allowDecimals
+                className="w-full text-lg font-bold tabular-nums bg-transparent border-none outline-none shadow-none focus-visible:ring-0 focus-visible:border-none p-0 h-auto text-foreground [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 placeholder="1"
               />
-              <span className="text-xs font-medium text-muted-foreground select-none pl-2">
+              <span className="text-xs font-semibold text-muted-foreground select-none pl-2">
                 kW
               </span>
             </div>
 
-            {/* Stepper buttons */}
+            {/* Stepper buttons (min 44px hit-box) */}
             <div className="flex items-center gap-1.5">
               <Button
                 type="button"
@@ -553,23 +532,36 @@ export function CalculatorForm({
                 size="icon"
                 onClick={() => adjustDemand(-0.5)}
                 disabled={demand <= 0}
-                className="size-9 rounded-xl border-border/60 hover:bg-muted active:scale-95 cursor-pointer"
+                className="size-11 sm:size-10 rounded-xl border-border/60 hover:bg-muted active:scale-[0.97] transition-transform duration-150 cursor-pointer"
                 aria-label="Decrease demand load by 0.5 kW"
               >
-                <Minus className="size-3.5" />
+                <Minus className="size-4" />
               </Button>
               <Button
                 type="button"
                 variant="outline"
                 size="icon"
                 onClick={() => adjustDemand(0.5)}
-                className="size-9 rounded-xl border-border/60 hover:bg-muted active:scale-95 cursor-pointer"
+                className="size-11 sm:size-10 rounded-xl border-border/60 hover:bg-muted active:scale-[0.97] transition-transform duration-150 cursor-pointer"
                 aria-label="Increase demand load by 0.5 kW"
               >
-                <Plus className="size-3.5" />
+                <Plus className="size-4" />
               </Button>
             </div>
           </div>
+        </div>
+
+        {/* Quick Helper to Open Appliance Calculator */}
+        <div className="pt-3 border-t border-border/40 flex items-center justify-between text-xs">
+          <span className="text-muted-foreground">Know your appliances?</span>
+          <button
+            type="button"
+            onClick={() => onModeChange("appliances")}
+            className="inline-flex items-center gap-1 font-semibold text-primary hover:underline cursor-pointer active:scale-[0.98] transition-transform"
+          >
+            <Sparkles className="size-3.5 text-primary" />
+            <span>Open Household Estimator</span>
+          </button>
         </div>
       </CardContent>
     </Card>

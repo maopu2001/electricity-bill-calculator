@@ -72,8 +72,8 @@ export function SlabBreakdown({ result }: SlabBreakdownProps) {
           </div>
         )}
 
-        {/* Breakdown Table */}
-        <div className="rounded-xl border border-border/60 overflow-hidden bg-muted/10">
+        {/* Desktop Breakdown Table (sm and up) */}
+        <div className="hidden sm:block rounded-xl border border-border/60 overflow-hidden bg-muted/10">
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/30 hover:bg-muted/30 border-b border-border/60">
@@ -133,6 +133,50 @@ export function SlabBreakdown({ result }: SlabBreakdownProps) {
               })}
             </TableBody>
           </Table>
+        </div>
+
+        {/* Mobile Breakdown Card List (< sm) */}
+        <div className="sm:hidden space-y-2">
+          {result.slabBreakdown.map((slabResult, i) => {
+            const isCurrentActive = slabResult.isActive && slabResult.unitsInSlab > 0;
+            return (
+              <div
+                key={i}
+                className={`p-3 rounded-xl border transition-[border-color,background-color] duration-150 ${
+                  isCurrentActive
+                    ? "border-primary/40 bg-primary/5 shadow-xs"
+                    : "border-border/40 bg-muted/10 opacity-50"
+                }`}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span
+                      className="size-2.5 rounded-full shrink-0 shadow-xs"
+                      style={{ backgroundColor: slabResult.slab.color }}
+                    />
+                    <span className="text-xs font-semibold text-foreground truncate">
+                      {slabResult.slab.label}
+                    </span>
+                    {isCurrentActive && (
+                      <Badge variant="outline" className="text-[9px] py-0 px-1.5 h-3.5 border-primary/30 text-primary bg-primary/10 font-bold shrink-0">
+                        Active
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="text-right font-mono text-xs font-bold text-foreground shrink-0">
+                    {slabResult.cost > 0 ? formatCurrency(slabResult.cost) : "৳0.00"}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between text-[11px] text-muted-foreground mt-1.5 pt-1.5 border-t border-border/30 font-mono">
+                  <span>Rate: ৳{slabResult.slab.energyRate.toFixed(2)}/kWh</span>
+                  <span>
+                    Usage: <strong className="text-foreground">{slabResult.unitsInSlab > 0 ? `${slabResult.unitsInSlab} kWh` : "0 kWh"}</strong>
+                  </span>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </CardContent>
     </Card>

@@ -36,7 +36,13 @@ function readStorageSnapshot(): CalculatorSnapshot {
     const rawAmount = localStorage.getItem(STORAGE_KEYS.AMOUNT);
     const rawDemand = localStorage.getItem(STORAGE_KEYS.DEMAND);
 
-    const mode: CalcMode = rawMode === "amount" ? "amount" : "units";
+    const mode: CalcMode =
+      rawMode === "amount"
+        ? "amount"
+        : rawMode === "appliances"
+        ? "appliances"
+        : "units";
+
     const units =
       rawUnits !== null && !isNaN(parseFloat(rawUnits))
         ? Math.max(0, parseFloat(rawUnits))

@@ -16,8 +16,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "VoltCalc — BERC 230/400V Electricity Bill Calculator",
-  description: "Calculate your monthly electricity bill based on the Bangladesh Energy Regulatory Commission (BERC) 230/400V tariff schedule.",
+  title: "VoltCalc — BERC Residential (LT-A) Electricity Bill Calculator",
+  description: "Calculate your monthly electricity bill based on the Bangladesh Energy Regulatory Commission (BERC) Residential (LT-A) tariff schedule.",
+  authors: [{ name: "M. Aktaruzzaman Opu", url: "https://maopu.com.bd" }],
+  creator: "M. Aktaruzzaman Opu",
   icons: {
     icon: "/logo.png",
   },

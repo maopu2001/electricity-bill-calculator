@@ -33,7 +33,7 @@ export function TariffInfo() {
             </span>
             <div>
               <CardTitle className="text-sm sm:text-base font-semibold text-foreground flex items-center gap-2">
-                Official BERC 230/400V Tariff Schedule
+                Official BERC Residential (LT-A) Tariff Schedule
                 <Badge variant="secondary" className="text-[10px] py-0 px-1.5 h-4 bg-muted border-border font-normal">
                   Gazette 2024–2026
                 </Badge>
@@ -94,32 +94,32 @@ export function TariffInfo() {
 
             {/* Explanatory notes */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-              <div className="rounded-xl border border-border/40 bg-muted/20 p-3 sm:p-3.5 space-y-1">
-                <div className="flex items-center gap-1.5 font-medium text-foreground">
+              <div className="rounded-xl border border-border/40 bg-muted/20 p-3 sm:p-3.5 space-y-1.5">
+                <div className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-foreground">
                   <Zap className="size-3.5 text-primary" />
                   <span>Stepped Billing</span>
                 </div>
-                <p className="text-muted-foreground text-[11px] leading-relaxed">
+                <p className="text-muted-foreground text-xs leading-relaxed">
                   Usage above 75 kWh is calculated progressively through each successive tier.
                 </p>
               </div>
 
-              <div className="rounded-xl border border-border/40 bg-muted/20 p-3 sm:p-3.5 space-y-1">
-                <div className="flex items-center gap-1.5 font-medium text-foreground">
-                  <Percent className="size-3.5 text-emerald-500" />
+              <div className="rounded-xl border border-border/40 bg-muted/20 p-3 sm:p-3.5 space-y-1.5">
+                <div className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-foreground">
+                  <Percent className="size-3.5 text-primary" />
                   <span>0.5% Timely Rebate</span>
                 </div>
-                <p className="text-muted-foreground text-[11px] leading-relaxed">
+                <p className="text-muted-foreground text-xs leading-relaxed">
                   A 0.5% statutory rebate is deducted from subtotal (Energy + Demand charges).
                 </p>
               </div>
 
-              <div className="rounded-xl border border-border/40 bg-muted/20 p-3 sm:p-3.5 space-y-1">
-                <div className="flex items-center gap-1.5 font-medium text-foreground">
-                  <Landmark className="size-3.5 text-amber-500" />
+              <div className="rounded-xl border border-border/40 bg-muted/20 p-3 sm:p-3.5 space-y-1.5">
+                <div className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-foreground">
+                  <Landmark className="size-3.5 text-primary" />
                   <span>5.0% VAT</span>
                 </div>
-                <p className="text-muted-foreground text-[11px] leading-relaxed">
+                <p className="text-muted-foreground text-xs leading-relaxed">
                   Govt. Value Added Tax (VAT) of 5% is calculated on the amount after rebate.
                 </p>
               </div>
